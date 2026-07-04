@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const { XMLParser } = require('fast-xml-parser');
 const nodemailer = require('nodemailer');
-
+require('dotenv').config();
 const app = express();
 const PORT = 3000;
 
@@ -13,8 +13,8 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: "MS_geOcy0@test-r6ke4n1opdegon12.mlsender.net",
-    pass: "mssp.SS6El2K.3yxj6ljrnvq4do2r.N9L42uZ"
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
   }
 });
 
@@ -130,8 +130,8 @@ app.post('/sendDailyBrief', async (req, res) => {
 
   try {
     await transporter.sendMail({
-      from: '"The Brief" <MS_geOcy0@test-r6ke4n1opdegon12.mlsender.net>',
-      to: "dailybreif@outlook.com",
+      from: '"The Brief" <${process.env.SMTP_USER}>',
+      to: "bastionbrief@proton.me",
       subject: `The Brief • ${new Date().toLocaleDateString('en-IN')}`,
       html: html
     });
