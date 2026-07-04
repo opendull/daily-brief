@@ -130,7 +130,7 @@ app.post('/sendDailyBrief', async (req, res) => {
 
   try {
     await transporter.sendMail({
-      from: '"The Brief" <${process.env.SMTP_USER}>',
+      from: `"The Brief" <${process.env.SMTP_USER}>`,
       to: "bastionbrief@proton.me",
       subject: `The Brief • ${new Date().toLocaleDateString('en-IN')}`,
       html: html
