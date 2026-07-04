@@ -143,7 +143,9 @@ app.post('/sendDailyBrief', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
-  console.log(`Test Endpoint → POST http://localhost:${PORT}/sendDailyBrief`);
-});
+// remove app.listen(...) entirely, or wrap it for local dev only:
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`Running locally on ${PORT}`));
+}
+
+module.exports = app;
