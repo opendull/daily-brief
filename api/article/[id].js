@@ -136,7 +136,7 @@ function renderPage({ id, title, content, image, category, published_at, liked, 
         </button>
       </div>
     </div>
-    ${image ? `<img class="hero" src="/api/image-proxy?url=${encodeURIComponent(image)}" alt="">` : ''}
+        ${image ? `<img class="hero" src="/api/image-proxy?url=${encodeURIComponent(image)}" alt="" onerror="this.style.display='none'">` : ''}
     <hr class="divider">
     <div id="content">
       ${paragraphs}

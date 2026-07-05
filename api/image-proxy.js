@@ -8,11 +8,14 @@ module.exports = async (req, res) => {
   }
 
   try {
+    const sourceOrigin = new URL(url).origin;
+
     const response = await axios.get(url, {
       responseType: 'arraybuffer',
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        'Referer': ''
+        'Referer': sourceOrigin,
+        'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8'
       },
       timeout: 10000
     });
