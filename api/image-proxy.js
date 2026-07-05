@@ -20,7 +20,17 @@ module.exports = async (req, res) => {
       timeout: 10000
     });
 
-    res.setHeader('Content-Type', response.headers['content-type'] || 'image/jpeg');
+    let contentType = response.headers['content-type'];
+    if (!contentType || !contentType.startsWith('image/')) {
+      // guess from file extension as fallback
+      if (url.match(/\.png/i)) contentType = 'image/png';
+      else if (url.match(/\.webp/i)) contentType = 'image/webp';
+      else if (url.match(/\.gif/i)) contentType = 'image/gif';
+      else contentType = 'image/jpeg';
+    }
+
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Content-Disposition', 'inline');
     res.setHeader('Cache-Control', 'public, max-age=86400');
     res.status(200).send(response.data);
   } catch (err) {
