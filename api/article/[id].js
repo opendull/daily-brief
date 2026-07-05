@@ -25,7 +25,7 @@ async function scrapeArticle(url) {
   return body.trim();
 }
 
-function renderPage({ id, title, content, image, category, published_at, liked, bookmarked }) {
+function renderPage({ id, title, content, image_url, category, published_at, liked, bookmarked }) {
   const paragraphs = content.split('\n\n').filter(p => p.length > 0)
     .map(p => `<p>${p}</p>`).join('\n');
 
@@ -136,7 +136,7 @@ function renderPage({ id, title, content, image, category, published_at, liked, 
         </button>
       </div>
     </div>
-        ${image ? `<img class="hero" src="/api/image-proxy?url=${encodeURIComponent(image)}" alt="" onerror="this.style.display='none'">` : ''}
+        ${image_url ? `<img class="hero" src="/api/image-proxy?url=${encodeURIComponent(image_url)}" alt="" onerror="this.style.display='none'">` : ''}
     <hr class="divider">
     <div id="content">
       ${paragraphs}
