@@ -131,12 +131,12 @@ function renderPage({ id, title, content, image, category, published_at, liked, 
         </button>
         <button class="icon-btn ${liked ? 'active' : ''}" id="likeBtn" onclick="toggleLike()">
           <svg id="likeIcon" viewBox="0 0 24 24" fill="${liked ? '#F91880' : 'none'}" stroke="${liked ? '#F91880' : '#86868b'}" stroke-width="2">
-            <path d="M12 21s-7.5-4.6-10-9.2C.5 8.8 2 5 5.7 5c2 0 3.4 1 4.3 2.4C10.9 6 12.3 5 14.3 5 18 5 19.5 8.8 22 11.8 19.5 16.4 12 21 12 21z"/>
+            <path d="M12 20.3c-.3 0-.6-.1-.8-.3C7.8 17 3 12.9 3 8.8 3 5.9 5.2 3.7 8 3.7c1.6 0 3 .7 4 1.9 1-1.2 2.4-1.9 4-1.9 2.8 0 5 2.2 5 5.1 0 4.1-4.8 8.2-8.2 11.2-.2.2-.5.3-.8.3z"/>
           </svg>
         </button>
       </div>
     </div>
-    ${image ? `<img class="hero" src="${image}" alt="">` : ''}
+    ${image ? `<img class="hero" src="${image}" alt="" referrerpolicy="no-referrer">` : ''}
     <hr class="divider">
     <div id="content">
       ${paragraphs}
@@ -165,12 +165,14 @@ function renderPage({ id, title, content, image, category, published_at, liked, 
       document.getElementById('dropdown').classList.remove('open');
     }
 
-    async function toggleBookmark() {
-      const res = await fetch('/api/bookmark/' + articleId, { method: 'POST' });
-      const data = await res.json();
+async function toggleBookmark() {
       const icon = document.getElementById('bookmarkIcon');
       const btn = document.getElementById('bookmarkBtn');
-      if (data.bookmarked) {
+      const wasActive = btn.classList.contains('active');
+      const willBeActive = !wasActive;
+
+      // update instantly
+      if (willBeActive) {
         icon.setAttribute('fill', '#0A84FF');
         icon.setAttribute('stroke', '#0A84FF');
         btn.classList.add('active');
@@ -179,14 +181,35 @@ function renderPage({ id, title, content, image, category, published_at, liked, 
         icon.setAttribute('stroke', '#86868b');
         btn.classList.remove('active');
       }
+
+      try {
+        const res = await fetch('/api/bookmark/' + articleId, { method: 'POST' });
+        const data = await res.json();
+        // correct state in case server disagrees
+        if (data.bookmarked !== willBeActive) {
+          if (data.bookmarked) {
+            icon.setAttribute('fill', '#0A84FF'); icon.setAttribute('stroke', '#0A84FF'); btn.classList.add('active');
+          } else {
+            icon.setAttribute('fill', 'none'); icon.setAttribute('stroke', '#86868b'); btn.classList.remove('active');
+          }
+        }
+      } catch (err) {
+        // revert on failure
+        if (wasActive) {
+          icon.setAttribute('fill', '#0A84FF'); icon.setAttribute('stroke', '#0A84FF'); btn.classList.add('active');
+        } else {
+          icon.setAttribute('fill', 'none'); icon.setAttribute('stroke', '#86868b'); btn.classList.remove('active');
+        }
+      }
     }
 
     async function toggleLike() {
-      const res = await fetch('/api/like/' + articleId, { method: 'POST' });
-      const data = await res.json();
       const icon = document.getElementById('likeIcon');
       const btn = document.getElementById('likeBtn');
-      if (data.liked) {
+      const wasActive = btn.classList.contains('active');
+      const willBeActive = !wasActive;
+
+      if (willBeActive) {
         icon.setAttribute('fill', '#F91880');
         icon.setAttribute('stroke', '#F91880');
         btn.classList.add('active');
@@ -194,6 +217,24 @@ function renderPage({ id, title, content, image, category, published_at, liked, 
         icon.setAttribute('fill', 'none');
         icon.setAttribute('stroke', '#86868b');
         btn.classList.remove('active');
+      }
+
+      try {
+        const res = await fetch('/api/like/' + articleId, { method: 'POST' });
+        const data = await res.json();
+        if (data.liked !== willBeActive) {
+          if (data.liked) {
+            icon.setAttribute('fill', '#F91880'); icon.setAttribute('stroke', '#F91880'); btn.classList.add('active');
+          } else {
+            icon.setAttribute('fill', 'none'); icon.setAttribute('stroke', '#86868b'); btn.classList.remove('active');
+          }
+        }
+      } catch (err) {
+        if (wasActive) {
+          icon.setAttribute('fill', '#F91880'); icon.setAttribute('stroke', '#F91880'); btn.classList.add('active');
+        } else {
+          icon.setAttribute('fill', 'none'); icon.setAttribute('stroke', '#86868b'); btn.classList.remove('active');
+        }
       }
     }
   </script>
