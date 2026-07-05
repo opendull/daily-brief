@@ -1,15 +1,5 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/sendDailyBrief.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/sendDailyBrief",
-      "dest": "/api/sendDailyBrief.js"
-    }
+  "rewrites": [
+    { "source": "/sendDailyBrief", "destination": "/api/sendDailyBrief" }
   ]
 }
