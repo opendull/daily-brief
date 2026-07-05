@@ -100,7 +100,7 @@ function renderPage({ id, title, content, image, category, published_at, liked, 
     display: flex; align-items: center; gap: 10px;
     width: 100%; border: none; background: none;
     padding: 12px 14px; font-size: 15px; text-align: left;
-    border-radius: 10px; cursor: pointer; color: inherit;
+    border-radius: 10px; cursor: pointer; color: #1d1d1f;
   }
   .dropdown button:active { background: rgba(0,0,0,0.06); }
 </style>
@@ -136,7 +136,7 @@ function renderPage({ id, title, content, image, category, published_at, liked, 
         </button>
       </div>
     </div>
-    ${image ? `<img class="hero" src="${image}" alt="" referrerpolicy="no-referrer">` : ''}
+    ${image ? `<img class="hero" src="/api/image-proxy?url=${encodeURIComponent(image)}" alt="">` : ''}
     <hr class="divider">
     <div id="content">
       ${paragraphs}
