@@ -75,22 +75,19 @@ async function fetchRSS(url) {
   }
 }
 
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY);
+
 async function generateEmbedding(text) {
   try {
-    const response = await axios.post(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${process.env.GOOGLE_AI_KEY}`,
-      {
-        model: "models/gemini-embedding-001",
-        content: {
-          parts: [{ text: text }]
-        }
-      },
-      {
-        headers: { 'Content-Type': 'application/json' },
-        timeout: 10000
-      }
-    );
-    return response.data.embedding?.values || null;
+    const model = genAI.getGenerativeModel({ model: "gemini-embedding-001" });
+    const result = await model.embedContent({
+      content: { parts: [{ text: text.trim() }] },
+      taskType: "RETRIEVAL_DOCUMENT",
+      outputDimensionality: 768
+    });
+    return result.embedding.values || null;
   } catch (e) {
     console.error('Embedding generation failed:', e.message);
     return null;
