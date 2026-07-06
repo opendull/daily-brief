@@ -245,6 +245,15 @@ async function toggleBookmark() {
 module.exports = async (req, res) => {
   const { id } = req.query;
 
+  // Track open (fire and forget, don't wait for result)
+  supabase
+    .from('articles')
+    .update({ opened_at: new Date().toISOString() })
+    .eq('id', id)
+    .is('opened_at', null)
+    .catch(err => console.error('Failed to track open:', err));
+
+  // Fetch article
   const { data: article, error } = await supabase
     .from('articles')
     .select('*')
