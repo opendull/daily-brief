@@ -78,13 +78,15 @@ async function fetchRSS(url) {
 async function generateEmbedding(text) {
   try {
     const response = await axios.post(
-      'https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent',
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${process.env.GOOGLE_AI_KEY}`,
       {
-        model: 'models/text-embedding-004',
-        content: { parts: [{ text }] }
+        model: "models/gemini-embedding-001",
+        content: {
+          parts: [{ text: text }]
+        }
       },
       {
-        params: { key: process.env.GOOGLE_AI_KEY },
+        headers: { 'Content-Type': 'application/json' },
         timeout: 10000
       }
     );
